@@ -1,0 +1,5 @@
+*.exe
+/build/
+/native/build/
+/Code/Extension State/
+*.pyc

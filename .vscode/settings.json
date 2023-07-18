@@ -1,0 +1,6 @@
+{
+  "[cpp]": {
+    "editor.tabSize": 4
+  },
+  "cmake.sourceDirectory": "/home/tatsh/dev/Leveldb-py/native"
+}
