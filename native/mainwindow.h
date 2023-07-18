@@ -20,34 +20,43 @@ class MyApp : public QMainWindow, private Ui::MainWindow {
 public:
     MyApp();
     ~MyApp();
-    static QTableWidgetItem *createItem(const QString &itemString);
 
 private:
-    QAction *setupMenu();
     void addLevelDb(const QString &levelDbDir);
-
     QMenuBar *menuBar;
 
 Q_SIGNALS:
-    void operate(leveldb::DB *db);
+    void operate(const QString &levelDbDir);
 };
 
 class Worker : public QObject {
     Q_OBJECT
 
 public Q_SLOTS:
-    void doWork(leveldb::DB *db) {
-        QMap<QString, QString> map;
+    void doWork(const QString &levelDbDir) {
+        leveldb::DB *db;
+        leveldb::Options dbOptions;
+        dbOptions.create_if_missing = false;
+        leveldb::Status status = leveldb::DB::Open(dbOptions, levelDbDir.toStdString(), &db);
+        QMap<QByteArray, QByteArray> map;
+        if (!status.ok()) {
+            qDebug() << status.ToString();
+            emit resultReady(map);
+            return;
+        }
         const auto it = db->NewIterator(leveldb::ReadOptions());
         for (it->SeekToFirst(); it->Valid(); it->Next()) {
-            map[QString::fromStdString(it->key().ToString())] =
-                QString::fromStdString(it->value().ToString());
+            auto key = QByteArray::fromRawData(it->key().data(), it->key().size());
+            auto value = QByteArray::fromRawData(it->value().data(), it->value().size());
+            if (!key.isEmpty() && !value.isEmpty()) {
+                map[key] = value;
+            }
         }
         emit resultReady(map);
     }
 
 Q_SIGNALS:
-    void resultReady(const QMap<QString, QString> &results);
+    void resultReady(const QMap<QByteArray, QByteArray> &results);
 };
 
 #endif // MAINWINDOW_H

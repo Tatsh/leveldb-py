@@ -23,9 +23,30 @@
       <property name="sortingEnabled">
        <bool>true</bool>
       </property>
+      <property name="columnCount">
+       <number>3</number>
+      </property>
       <attribute name="horizontalHeaderCascadingSectionResizes">
        <bool>true</bool>
       </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+      <column>
+       <property name="text">
+        <string>Key</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Value</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Binary</string>
+       </property>
+      </column>
      </widget>
     </item>
    </layout>
@@ -36,11 +57,26 @@
      <x>0</x>
      <y>0</y>
      <width>1544</width>
-     <height>47</height>
+     <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionOpenDatabase"/>
+   </widget>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpenDatabase">
+   <property name="text">
+    <string>&amp;Open Database...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

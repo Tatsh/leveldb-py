@@ -27,17 +27,17 @@ add_definitions(
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
-    add_compile_options(
-      -Wall
-      -Wextra
-      -Wno-c++98-compat
-      -Wno-c++98-compat-pedantic
-      -Wno-deprecated-copy-with-user-provided-dtor
-      -Wno-exit-time-destructors
-      -Wno-global-constructors
-      -Wno-inconsistent-missing-destructor-override
-      -Wno-padded
-      -Wno-redundant-parens)
+  add_compile_options(
+    -Wall
+    -Wextra
+    -Wno-c++98-compat
+    -Wno-c++98-compat-pedantic
+    -Wno-deprecated-copy-with-user-provided-dtor
+    -Wno-exit-time-destructors
+    -Wno-global-constructors
+    -Wno-inconsistent-missing-destructor-override
+    -Wno-padded
+    -Wno-redundant-parens)
 endif()
 
 include_directories(.)
