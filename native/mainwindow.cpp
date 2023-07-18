@@ -33,13 +33,12 @@ void MyApp::addLevelDb(QString &levelDbDir) {
     levelDbTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     int rowNum = 0;
     auto it = db->NewIterator(leveldb::ReadOptions());
-    for (it->SeekToFirst(); it->Valid(); it->Next()) {
+    for (it->SeekToFirst(); it->Valid(); it->Next(), rowNum++) {
         levelDbTableWidget->insertRow(rowNum);
         auto key = QString::fromStdString(it->key().ToString());
         auto value = QString::fromStdString(it->value().ToString());
         levelDbTableWidget->setItem(rowNum, 0, createItem(key));
         levelDbTableWidget->setItem(rowNum, 1, createItem(value));
-        rowNum += 1;
     }
 }
 
