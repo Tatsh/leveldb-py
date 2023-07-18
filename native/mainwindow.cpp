@@ -2,65 +2,70 @@
 #include <QtGui/QAction>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QTableWidgetItem>
-#include <leveldb/db.h>
 
 #include "mainwindow.h"
 
 MyApp::MyApp() {
     setupUi(this);
     setUnifiedTitleAndToolBarOnMac(true);
-    auto fileMenu = menubar->addMenu(QStringLiteral("&File"));
-    fileMenu->addAction(setupMenu());
+    menubar->addMenu(QStringLiteral("&File"))->addAction(setupMenu());
+    levelDbTableWidget->setColumnCount(2);
+    levelDbTableWidget->setHorizontalHeaderLabels({QStringLiteral("Key"), QStringLiteral("Value")});
 }
 
-void MyApp::clearLevelDbTableWidget() {
-    levelDbTableWidget->clearContents();
-    levelDbTableWidget->setColumnCount(0);
-    levelDbTableWidget->setRowCount(0);
+MyApp::~MyApp() {
+    workerThread.quit();
+    workerThread.wait();
 }
 
-void MyApp::addLevelDb(QString &levelDbDir) {
+void MyApp::addLevelDb(const QString &levelDbDir) {
     leveldb::DB *db;
-    leveldb::Options options;
-    options.create_if_missing = false;
-    leveldb::Status status = leveldb::DB::Open(options, levelDbDir.toStdString(), &db);
+    leveldb::Options dbOptions;
+    dbOptions.create_if_missing = false;
+    leveldb::Status status = leveldb::DB::Open(dbOptions, levelDbDir.toStdString(), &db);
     if (!status.ok()) {
         qDebug() << status.ToString();
         return;
     }
-    levelDbTableWidget->setColumnCount(2);
-    levelDbTableWidget->setHorizontalHeaderLabels({QStringLiteral("Key"), QStringLiteral("Value")});
-    levelDbTableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    int rowNum = 0;
-    auto it = db->NewIterator(leveldb::ReadOptions());
-    for (it->SeekToFirst(); it->Valid(); it->Next(), rowNum++) {
-        levelDbTableWidget->insertRow(rowNum);
-        auto key = QString::fromStdString(it->key().ToString());
-        auto value = QString::fromStdString(it->value().ToString());
-        levelDbTableWidget->setItem(rowNum, 0, createItem(key));
-        levelDbTableWidget->setItem(rowNum, 1, createItem(value));
-    }
+    levelDbTableWidget->clearContents();
+    levelDbTableWidget->setRowCount(0);
+    const auto worker = new Worker();
+    worker->moveToThread(&workerThread);
+    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
+    connect(this, &MyApp::operate, worker, &Worker::doWork);
+    connect(worker, &Worker::resultReady, [this](const QMap<QString, QString> &results) {
+        levelDbTableWidget->setDisabled(true);
+        quint64 rowNum = 0;
+        for (auto [key, value] : results.asKeyValueRange()) {
+            levelDbTableWidget->insertRow(rowNum);
+            levelDbTableWidget->setItem(rowNum, 0, createItem(key));
+            levelDbTableWidget->setItem(rowNum, 1, createItem(value));
+            rowNum++;
+        }
+        levelDbTableWidget->setDisabled(false);
+    });
+    workerThread.start();
+    emit operate(db);
 }
 
-QTableWidgetItem *MyApp::createItem(QString &itemString) {
+QTableWidgetItem *MyApp::createItem(const QString &itemString) {
     auto item = new QTableWidgetItem(itemString);
     item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
     return item;
 }
 
 QAction *MyApp::setupMenu() {
-    auto fileOpenAction = new QAction(QStringLiteral("Open Database"), this);
-    fileOpenAction->setShortcut(QStringLiteral("CTRL+O"));
+    auto fileOpenAction = new QAction(QStringLiteral("&Open Database..."), this);
+    fileOpenAction->setShortcut(QStringLiteral("Ctrl+O"));
     fileOpenAction->setStatusTip(QStringLiteral("Open Database"));
     connect(fileOpenAction, &QAction::triggered, [this]() {
-        auto fileDirectory =
-            QFileDialog().getExistingDirectory(this, QStringLiteral("Select directory"));
-        if (fileDirectory != nullptr) {
-            clearLevelDbTableWidget();
+        auto fileDirectory = QFileDialog::getExistingDirectory(
+            this,
+            QStringLiteral("Select directory"),
+            QString(),
+            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        if (!fileDirectory.isEmpty()) {
             addLevelDb(fileDirectory);
-            qDebug() << "Directory selected is" << fileDirectory;
-        } else {
-            qDebug() << "No directory selected";
         }
     });
     return fileOpenAction;

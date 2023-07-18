@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 3.26.0)
-project(devmgmt)
-
-include(FindPkgConfig)
+project(leveldb_viewer)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS ON)
 
 find_package(
   Qt6
@@ -28,9 +27,9 @@ add_definitions(
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND DEVMGMT_CXX_WARN_ERROR_ALL)
     add_compile_options(
-      -Weverything
+      -Wall
+      -Wextra
       -Wno-c++98-compat
       -Wno-c++98-compat-pedantic
       -Wno-deprecated-copy-with-user-provided-dtor
@@ -39,7 +38,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
       -Wno-inconsistent-missing-destructor-override
       -Wno-padded
       -Wno-redundant-parens)
-  endif()
 endif()
 
 include_directories(.)

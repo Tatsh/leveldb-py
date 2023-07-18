@@ -2,5 +2,22 @@
   "[cpp]": {
     "editor.tabSize": 4
   },
-  "cmake.sourceDirectory": "/home/tatsh/dev/Leveldb-py/native"
+  "cmake.sourceDirectory": "/home/tatsh/dev/Leveldb-py/native",
+  "files.associations": {
+    "__hash_table": "cpp",
+    "__tree": "cpp",
+    "array": "cpp",
+    "charconv": "cpp",
+    "compare": "cpp",
+    "forward_list": "cpp",
+    "functional": "cpp",
+    "limits": "cpp",
+    "qtablewidgetitem": "cpp",
+    "ratio": "cpp",
+    "span": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp",
+    "utility": "cpp",
+    "variant": "cpp"
+  }
 }

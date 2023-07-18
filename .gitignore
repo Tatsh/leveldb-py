@@ -3,3 +3,4 @@
 /native/build/
 /Code/Extension State/
 *.pyc
+/.cache/
