@@ -18,10 +18,11 @@ public:
     MyApp();
 
 private:
-    void clearLevelDbTableWidget();
-    void addLevelDb(QString &levelDbDir);
-    QTableWidgetItem *createItem(QString &itemString);
     QAction *setupMenu();
+    QTableWidgetItem *createItem(QString &itemString);
+    void addLevelDb(QString &levelDbDir);
+    void clearLevelDbTableWidget();
+
     QMenuBar *menuBar;
 };
 
