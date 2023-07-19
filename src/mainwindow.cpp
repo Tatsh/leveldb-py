@@ -23,7 +23,7 @@ MyApp::MyApp(int argc, char *argv[]) {
     connect(actionOpenDatabase, &QAction::triggered, [this]() {
         auto fileDirectory = QFileDialog::getExistingDirectory(
             this,
-            QStringLiteral("Select directory"),
+            tr("Select directory"),
             QString(),
             QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
         if (!fileDirectory.isEmpty()) {
