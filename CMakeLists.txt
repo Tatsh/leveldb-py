@@ -40,6 +40,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     -Wno-redundant-parens)
 endif()
 
-include_directories(.)
 add_executable(leveldb-viewer src/main.cpp src/mainwindow.cpp)
-target_link_libraries(leveldb-viewer leveldb Qt6::Gui Qt6::Widgets)
+target_include_directories(leveldb-viewer PRIVATE ${leveldb_INCLUDE_DIR})
+target_link_libraries(leveldb-viewer leveldb::leveldb Qt6::Gui Qt6::Widgets)

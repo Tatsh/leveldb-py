@@ -1,6 +1,5 @@
 from typing import Any, Iterator
 
-
 class DB:
     def __init__(self, s: str):
         ...

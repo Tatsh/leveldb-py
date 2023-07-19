@@ -16,7 +16,6 @@ QT_END_NAMESPACE
 class MyApp : public QMainWindow, private Ui::MainWindow {
     Q_OBJECT
 
-
 public:
     MyApp(int argc, char *argv[]);
     ~MyApp();
