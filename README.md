@@ -1,22 +1,28 @@
-# LevelDB GUI Viewer and Dumper
+# LevelDB Viewer and Dumper
 
-This repository contains executables (source code coming soon) to view LevelDB's in a GUI or to dump them to a sqlite database and CSV file.
+This repository contains media to view LevelDB databases in a GUI or dump them to a SQLite database.
 
-# Special Note:
-To use the either program make sure you make a copy of the levelDB directory that you want to view/dump Once you view it and dump it the programs will no longer
-be able to read from them so you will have to get a cew copy of them.
+## Special Note
 
-# leveldb-dump.exe Usage
+To use the either program make sure you make a copy of the levelDB directory that you want to
+view/dump.
 
-Leveldb-dump.exe <directory to leveldb> <base file name>
+## leveldb-dump Usage
 
-<directory to leveldb> is the directory that the levelDB database resides in.
+```shell
+leveldb-dump LEVELDB_DIRECTORY [OUTPUT_FILENAME]
+```
 
-<base file name> the base file name that the sqlite database and csv files will be created under.
+`LEVELDB_DIRECTORY` is the directory that the LevelDB database resides in.
 
-# leveldb_viewer.exe
+`OUTPUT_FILENAME` the file name of the SQLite database. If not specified, defaults to the directory
+name with `.sqlite` appended.
 
-Leveldb_viewer.exe
+## leveldb-viewer
 
-Under the File menu option choose open database.  Navigate to the directory that the levelDB data resides in and click open to view the key value pairs.
+```shell
+leveldb_viewer [LEVELDB_DIRECTORY]
+```
 
+Under the _File_ menu option choose _Open Database_. Navigate to the directory that the LevelDB
+data resides in and click _Open_ to view the key/value pairs.

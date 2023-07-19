@@ -1,13 +1,13 @@
 {
   "configurations": [
     {
-      "name": "Linux",
-      "includePath": ["${workspaceFolder}/**", "/usr/include/qt6"],
-      "defines": [],
+      "cStandard": "gnu23",
       "compilerPath": "/usr/bin/gcc",
-      "cStandard": "gnu17",
-      "cppStandard": "gnu++17",
-      "configurationProvider": "ms-vscode.cmake-tools"
+      "configurationProvider": "ms-vscode.cmake-tools",
+      "cppStandard": "gnu++23",
+      "defines": [],
+      "includePath": ["${workspaceFolder}/**", "/usr/include/qt6"],
+      "name": "Linux"
     }
   ],
   "version": 4

@@ -6,7 +6,18 @@
 
 #include "mainwindow.h"
 
-MyApp::MyApp() {
+static inline bool convertToUtf16(const QByteArray &ba, QString *out) {
+    auto toUtf16 = QStringDecoder(QStringDecoder::Utf8);
+    QString decoded = toUtf16(ba);
+    *out = decoded;
+    return toUtf16.hasError();
+}
+
+static inline QString binToHex(const QByteArray &ba) {
+    return QStringLiteral("0x%1").arg(QString::fromLocal8Bit(ba.toHex(' ')));
+}
+
+MyApp::MyApp(int argc, char *argv[]) {
     setupUi(this);
     setUnifiedTitleAndToolBarOnMac(true);
     connect(actionOpenDatabase, &QAction::triggered, [this]() {
@@ -19,6 +30,9 @@ MyApp::MyApp() {
             addLevelDb(fileDirectory);
         }
     });
+    if (argc >= 2) {
+        addLevelDb(QString::fromUtf8(argv[1]));
+    }
 }
 
 MyApp::~MyApp() {
@@ -34,32 +48,17 @@ void MyApp::addLevelDb(const QString &levelDbDir) {
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
     connect(this, &MyApp::operate, worker, &Worker::doWork);
     connect(worker, &Worker::resultReady, [this](const QMap<QByteArray, QByteArray> &results) {
-        auto toUtf16 = QStringDecoder(QStringDecoder::Utf8);
         levelDbTableWidget->setDisabled(true);
         quint64 rowNum = 0;
         for (auto [key, value] : results.asKeyValueRange()) {
-            auto keyIsBinary = false;
-            auto valueIsBinary = false;
+            QString decodedKey, decodedValue;
+            auto keyIsBinary = convertToUtf16(key, &decodedKey);
             levelDbTableWidget->insertRow(rowNum);
-            QString decodedKey = toUtf16(key);
-            keyIsBinary = toUtf16.hasError();
             levelDbTableWidget->setItem(
-                rowNum,
-                0,
-                new QTableWidgetItem(!keyIsBinary ? decodedKey :
-                                                    QStringLiteral("0x%1").arg(
-                                                        QString::fromLocal8Bit(key.toHex(' ')))));
-            toUtf16.resetState();
-            QString decodedValue = toUtf16(value);
-            valueIsBinary = toUtf16.hasError();
+                rowNum, 0, new QTableWidgetItem(!keyIsBinary ? decodedKey : binToHex(key)));
+            auto valueIsBinary = convertToUtf16(value, &decodedValue);
             levelDbTableWidget->setItem(
-                rowNum,
-                1,
-                new QTableWidgetItem(
-                    !valueIsBinary ?
-                        decodedValue :
-                        QStringLiteral("0x%1").arg(QString::fromLocal8Bit(value.toHex(' ')))));
-            toUtf16.resetState();
+                rowNum, 1, new QTableWidgetItem(!valueIsBinary ? decodedValue : binToHex(value)));
             levelDbTableWidget->setItem(
                 rowNum,
                 2,

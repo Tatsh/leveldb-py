@@ -1,6 +1,14 @@
 *.exe
-/build/
-/native/build/
-/Code/Extension State/
+*.ldb
+*.log
 *.pyc
+*.sqlite
 /.cache/
+CURRENT
+LOCK
+LOG
+LOG.old
+MANIFEST-*
+build/
+lost/
+node_modules/

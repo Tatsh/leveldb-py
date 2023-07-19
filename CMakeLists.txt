@@ -41,5 +41,5 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 include_directories(.)
-add_executable(leveldb-viewer main.cpp mainwindow.cpp)
+add_executable(leveldb-viewer src/main.cpp src/mainwindow.cpp)
 target_link_libraries(leveldb-viewer leveldb Qt6::Gui Qt6::Widgets)
