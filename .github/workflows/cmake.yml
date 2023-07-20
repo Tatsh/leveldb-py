@@ -27,7 +27,7 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
-name: CMake
+name: Build
 'on':
   pull_request:
     branches:
