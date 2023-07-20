@@ -3,6 +3,7 @@
 #include <QtGui/QAction>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QTableWidgetItem>
+#include <leveldb/db.h>
 
 #include "mainwindow.h"
 
@@ -47,26 +48,59 @@ void MyApp::addLevelDb(const QString &levelDbDir) {
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
     connect(this, &MyApp::operate, worker, &Worker::doWork);
-    connect(worker, &Worker::resultReady, [this](const QMap<QByteArray, QByteArray> &results) {
-        levelDbTableWidget->setDisabled(true);
-        quint64 rowNum = 0;
-        for (auto [key, value] : results.asKeyValueRange()) {
-            QString decodedKey, decodedValue;
-            auto keyIsBinary = convertToUtf16(key, &decodedKey);
-            levelDbTableWidget->insertRow(rowNum);
-            levelDbTableWidget->setItem(
-                rowNum, 0, new QTableWidgetItem(!keyIsBinary ? decodedKey : binToHex(key)));
-            auto valueIsBinary = convertToUtf16(value, &decodedValue);
-            levelDbTableWidget->setItem(
-                rowNum, 1, new QTableWidgetItem(!valueIsBinary ? decodedValue : binToHex(value)));
-            levelDbTableWidget->setItem(
-                rowNum,
-                2,
-                new QTableWidgetItem(keyIsBinary || valueIsBinary ? tr("Yes") : tr("No")));
-            rowNum++;
-        }
-        levelDbTableWidget->setDisabled(false);
-    });
+    connect(worker,
+            &Worker::resultReady,
+            [this](const QList<std::pair<QByteArray, QByteArray>> &results) {
+                levelDbTableWidget->setDisabled(true);
+                quint64 rowNum = 0;
+                for (auto pair : results) {
+                    QString decodedKey, decodedValue;
+                    levelDbTableWidget->insertRow(rowNum);
+                    auto key = std::get<0>(pair);
+                    auto value = std::get<1>(pair);
+                    auto keyIsBinary = convertToUtf16(key, &decodedKey);
+                    levelDbTableWidget->setItem(
+                        rowNum, 0, new QTableWidgetItem(!keyIsBinary ? decodedKey : binToHex(key)));
+                    auto valueIsBinary = convertToUtf16(value, &decodedValue);
+                    levelDbTableWidget->setItem(
+                        rowNum,
+                        1,
+                        new QTableWidgetItem(!valueIsBinary ? decodedValue : binToHex(value)));
+                    levelDbTableWidget->setItem(
+                        rowNum,
+                        2,
+                        new QTableWidgetItem(keyIsBinary || valueIsBinary ? tr("Yes") : tr("No")));
+                    rowNum++;
+                }
+                levelDbTableWidget->setDisabled(false);
+            });
     workerThread.start();
     emit operate(levelDbDir);
+}
+
+void Worker::doWork(const QString &levelDbDir) {
+    leveldb::DB *db;
+    leveldb::Options dbOptions;
+    dbOptions.create_if_missing = false;
+    leveldb::Status status = leveldb::DB::Open(dbOptions, levelDbDir.toStdString(), &db);
+    QList<std::pair<QByteArray, QByteArray>> list;
+    if (!status.ok()) {
+        qCritical() << status.ToString();
+        emit resultReady(list);
+        return;
+    }
+    const auto it = db->NewIterator(leveldb::ReadOptions());
+    for (it->SeekToFirst(); it->Valid(); it->Next()) {
+        auto key = QByteArray(it->key().data(), it->key().size());
+        if (key.isEmpty()) {
+            key = tr("<empty>").toLocal8Bit();
+        }
+        auto value = QByteArray(it->value().data(), it->value().size());
+        if (value.isEmpty()) {
+            value = tr("<empty>").toLocal8Bit();
+        }
+        auto pair = std::make_pair(key, value);
+        list << pair;
+    }
+    emit resultReady(list);
 }

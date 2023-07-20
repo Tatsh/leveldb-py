@@ -3,9 +3,7 @@ autorcc
 autouic
 buildsystems
 bytearray
-charconv
 compat
-ctest
 dcmake
 docparams
 elif
