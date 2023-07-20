@@ -44,6 +44,7 @@ class MyApp(QMainWindow, Ui_MainWindow):  # type: ignore[valid-type, misc]
     def add_leveldb(self, level_db_dir: str) -> None:
         self.levelDbTableWidget.clearContents()
         self.levelDbTableWidget.setRowCount(0)
+        self.levelDbTableWidget.setDisabled(True)
         ldb = plyvel.DB(level_db_dir)
         row_num = 0
         for key, value in ldb.iterator():
@@ -63,6 +64,7 @@ class MyApp(QMainWindow, Ui_MainWindow):  # type: ignore[valid-type, misc]
                 QTableWidgetItem(
                     self.tr('Yes') if value_is_binary or key_is_binary else self.tr('No')))
             row_num += 1
+        self.levelDbTableWidget.setDisabled(False)
         ldb.close()
 
 
