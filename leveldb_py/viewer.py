@@ -1,8 +1,8 @@
 # pylint: disable=no-name-in-module
 from os.path import dirname
 from pathlib import Path
-import sys
 from typing import Literal
+import sys
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QTableWidgetItem
