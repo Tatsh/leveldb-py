@@ -85,6 +85,8 @@ void Worker::doWork(const QString &levelDbDir) {
     leveldb::Status status = leveldb::DB::Open(dbOptions, levelDbDir.toStdString(), &db);
     QList<std::pair<QByteArray, QByteArray>> list;
     if (!status.ok()) {
+        // FIXME Some databases get idb_cmp1 does not match existing comparator :
+        // leveldb.BytewiseComparator", might be Chromium specific
         qCritical() << status.ToString();
         emit resultReady(list);
         return;
