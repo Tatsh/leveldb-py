@@ -2,6 +2,7 @@
 from os.path import dirname
 from pathlib import Path
 import sys
+from typing import Literal
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QTableWidgetItem
@@ -11,12 +12,11 @@ import plyvel
 __all__ = ('main',)
 
 
-def to_str(ba: bytearray, container: list[str]) -> bool:
+def to_str(ba: bytearray) -> tuple[Literal[False], str] | tuple[Literal[True], None]:
     try:
-        container[0] = ba.decode()
-        return False
+        return False, ba.decode()
     except UnicodeDecodeError:
-        return True
+        return True, None
 
 
 def bin_to_hex(ba: bytearray) -> str:
@@ -49,16 +49,16 @@ class MyApp(QMainWindow, Ui_MainWindow):  # type: ignore[valid-type, misc]
         row_num = 0
         for key, value in ldb.iterator():
             self.levelDbTableWidget.insertRow(row_num)
-            key_container = [key]
-            key_is_binary = to_str(key, key_container)
+            key_is_binary, decoded_key = to_str(key)
             self.levelDbTableWidget.setItem(
                 row_num, 0,
-                QTableWidgetItem(key_container[0] if not key_is_binary else bin_to_hex(key)))
-            value_container = [value]
-            value_is_binary = to_str(value, value_container)
+                QTableWidgetItem(
+                    decoded_key if not key_is_binary and decoded_key else bin_to_hex(key)))
+            value_is_binary, decoded_value = to_str(value)
             self.levelDbTableWidget.setItem(
                 row_num, 1,
-                QTableWidgetItem(value_container[0] if not value_is_binary else bin_to_hex(key)))
+                QTableWidgetItem(
+                    decoded_value if not value_is_binary and decoded_value else bin_to_hex(key)))
             self.levelDbTableWidget.setItem(
                 row_num, 2,
                 QTableWidgetItem(
