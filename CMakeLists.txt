@@ -27,9 +27,6 @@ add_compile_definitions(
   QT_USE_FAST_OPERATOR_PLUS
   QT_USE_QSTRINGBUILDER)
 
-if(WIN32 AND MSVC)
-endif()
-
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
   if(MSVC)
@@ -93,6 +90,18 @@ if(APPLE OR WIN32)
     # FIXME NSIS does not create shortcut to app
 
     # FIXME Set publisher
+
+    # FIXME Set 'file description'?
+
+    # FIXME Set Product name
+
+    # FIXME Set 'file version'?
+
+    # FIXME Set Product version
+
+    # FIXME Set Copyright
+
+    # FIXME Set language
 
     # FIXME No UNIX-style packaging. Just have a single root.
     set(CPACK_GENERATOR "NSIS;ZIP")
