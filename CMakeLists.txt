@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.26.0)
-set(CMAKE_SYSTEM_VERSION "10.0.17763.0" CACHE TYPE INTERNAL FORCE)
 project(
   leveldb_viewer
   DESCRIPTION "A very basic LevelDB viewer."
@@ -53,7 +52,6 @@ set_target_properties(
   PROPERTIES MACOSX_BUNDLE ON
              MACOSX_BUNDLE_BUNDLE_NAME "LevelDB Viewer"
              MACOSX_BUNDLE_GUI_IDENTIFIER sh.tat.leveldb-viewer
-             MSVC_RUNTIME_LIBRARY MultiThreaded
              WIN32_EXECUTABLE ON)
 install(
   TARGETS leveldb-viewer
