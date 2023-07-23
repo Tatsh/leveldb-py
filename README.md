@@ -1,5 +1,8 @@
 # LevelDB viewer and dumper
 
+[![Build](https://github.com/Tatsh/leveldb-py/actions/workflows/cmake.yml/badge.svg)](https://github.com/Tatsh/leveldb-py/actions/workflows/cmake.yml)
+[![QA](https://github.com/Tatsh/leveldb-py/actions/workflows/qa.yml/badge.svg)](https://github.com/Tatsh/leveldb-py/actions/workflows/qa.yml)
+
 This repository contains software to view LevelDB databases in a GUI and dump them to a SQLite database.
 
 ## Notes
