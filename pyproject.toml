@@ -12,7 +12,7 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 python = "^3.10"
 click = "^8.1.7"
-plyvel = "^1.5.0"
+plyvel = "^1.5.1"
 pyqt5 = "^5.15.10"
 
 [tool.poetry.group.dev]
