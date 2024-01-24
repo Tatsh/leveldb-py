@@ -391,13 +391,13 @@ validation = ["pydantic (>=1.7.4)"]
 
 [[package]]
 name = "rope"
-version = "1.11.0"
+version = "1.12.0"
 description = "a python refactoring library..."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "rope-1.11.0-py3-none-any.whl", hash = "sha256:62c9028353d1f020653bd1b090d659031539842ede6bd65985f86db3d6430932"},
-    {file = "rope-1.11.0.tar.gz", hash = "sha256:ac0cbdcda5a546e1e56c54976df07ea2cb04c806f65459bc213536c5d1bc073e"},
+    {file = "rope-1.12.0-py3-none-any.whl", hash = "sha256:01f06624159e6b2ec9b94412d519e8877a19eeabe392f469c36f7236df05d443"},
+    {file = "rope-1.12.0.tar.gz", hash = "sha256:93a1bb991fbf0426e8d415102d1c092ccc42e826ce9a42c4d61ce53d7786d9d9"},
 ]
 
 [package.dependencies]
@@ -475,4 +475,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "b86c48a5220b292f91c4485a154799c03aed00d7c22d8380e52f0170acaa2c38"
+content-hash = "d9d2a325e25a3f226f03e15efa3d563597401551808e36504b9d3a171b671292"
