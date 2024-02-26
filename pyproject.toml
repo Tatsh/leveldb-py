@@ -27,7 +27,7 @@ rope = "^1.12.0"
 
 
 [tool.poetry.group.tests.dependencies]
-pytest = "^8.0.1"
+pytest = "^8.0.2"
 
 [build-system]
 requires = ["poetry-core"]
