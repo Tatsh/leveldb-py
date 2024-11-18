@@ -19,7 +19,7 @@ pyqt5 = "^5.15.11"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-yapf = "^0.40.2"
+yapf = "^0.43.0"
 mypy = "^1.13.0"
 pylint = "^3.3.1"
 pylint-quotes = "^0.2.3"
