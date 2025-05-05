@@ -21,7 +21,7 @@ optional = true
 [tool.poetry.group.dev.dependencies]
 yapf = "^0.43.0"
 mypy = "^1.15.0"
-pylint = "^3.3.6"
+pylint = "^3.3.7"
 pylint-quotes = "^0.2.3"
 rope = "^1.13.0"
 
